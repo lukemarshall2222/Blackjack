@@ -135,6 +135,8 @@ Deck *get_decks(long num_decks){
 void shuffle(Deck *deck, long num_decks){
     Card *tmp = NULL;
     int random;
+    srand(time(NULL));
+
     for (int j = 0; j < 4; j++){
         for (int i = 0; i < (num_decks * DECK_SIZE); i++){
             random = rand() % (num_decks * DECK_SIZE);
@@ -150,6 +152,15 @@ Card *pop(Deck *deck){
     Card *card = deck->cards[deck->curr];
     deck->curr++;
     return card;
+}
+
+int empty_deck(Deck *deck){
+    if (deck->num_cards == deck->curr){
+        printf("The dealer has run out of cards.\nExiting Blackjack. Thanks for playing!\n");
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 //Frees the memory associated with the deck
@@ -194,10 +205,6 @@ int wager(Player *player, double wager){
 
 //Calls pop() to add a card to a player's hand and calculates the new total
 int player_hit(Deck *deck, Player *player){
-    if (deck->num_cards == deck->curr){
-        printf("The dealer has run out of cards.\nExiting Blackjack. Thanks for playing!\n");
-        exit(0);
-    }
     Card *new_card = pop(deck);
     player->hand[player->curr] = new_card;
     player->total += player->hand[player->curr]->value;
@@ -455,12 +462,8 @@ int dealer_hit_saved(Dealer *dealer, Card *down_card){
     return 1;
 }
 
-//hit function for after all plaeyrs are standing
+//hit function for after all players are standing
 int dealer_hit(Dealer *dealer, Deck *deck){
-    if (deck->num_cards == deck->curr){
-       printf("The dealer has run out of cards.\nExiting Blackjack. Thanks for playing!\n");
-       exit(0);
-    }
     Card *new_card = pop(deck);
     dealer->hand[dealer->curr] = new_card;
     dealer->total += new_card->value;
@@ -511,4 +514,18 @@ void dealer_print_hand(Dealer *dealer){
 void free_dealer(Dealer *dealer){
     free(dealer->hand);
     free(dealer);
+}
+
+void exit_game(Dealer *dealer, Player *players, long num_players, Deck *deck) {
+    end_round(dealer, players, num_players);
+    for (int i = 0; i < num_players; i++) {
+        if (players[i].bank != -42.){
+            printf("Player %d finished with %.2f\n", i+1, players[i].bank);
+        } else {
+            continue;
+        }
+    }
+    free_dealer(dealer);
+    free_deck(deck, deck->num_cards / DECK_SIZE);
+    free_players(players, num_players);
 }

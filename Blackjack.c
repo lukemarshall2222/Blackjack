@@ -97,7 +97,7 @@ int main(){
                 player_check--;
                 if (player_check < 1){
                 printf("All players have either left the game or have insufficient funds to continue playing.\nExiting Blackjack. Thanks for playing!\n");
-                exit(0);
+                goto Exit;
                 }
                 continue;
             }
@@ -138,10 +138,16 @@ int main(){
 
 
         //Distribute two cards per player and dealer
+        if (empty_deck(deck)){
+            goto Exit;
+        }
         int player_num = 0;
         Card *down_card = saved_card(deck);
         for (int j = 0; j < 2; j++){
             for (int i = 0; i < num_players; i++){
+                if (empty_deck(deck)) {
+                    goto Exit;
+                }
                 if (players[i].playing){
                     player_num = (i % num_players) + 1;
                     printf("Player %d:\n", player_num);
@@ -167,6 +173,11 @@ int main(){
                         continuation = false;
                         continue;
                     }
+                    
+                    if (empty_deck(deck)) {
+                        goto Exit;
+                    }
+
                     printf("Player %d, please type and enter 'h' to hit and 's' to stay.(Enter 'p' to see your hand,'d' to see the dealer's face-up card, 'b' to see what is in your bank, or 't' to see your total): ", (i+1));
                     char *h_checker = fgets(hit_stay, sizeof(hit_stay), stdin);
 
@@ -223,8 +234,7 @@ int main(){
         round_num++;
     }
 
-    free_dealer(dealer);
-    free_deck(deck, num_decks);
-    free_players(players, num_players);
+    Exit:
+    exit_game(dealer, players, num_players, deck);
     return 0;
 }

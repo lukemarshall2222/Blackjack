@@ -217,15 +217,15 @@ int test_get_player(){
 }
 
 //test for the bet function
-int test_bet(double wager){
+int test_wager(double bet){
     Player player;
     get_player(&player);
-    int bet_success = bet(&player, wager);
+    int bet_success = wager(&player, bet);
     if (!bet_success){
         return 0;
     }
 
-    if (player.bet != wager){
+    if (player.bet != bet){
         return 0;
     } else {
         return 1;
@@ -279,8 +279,8 @@ int test_natural(){
     player.hand[0] = first_card;
     player.hand[1] = sec_card;
     player.total = (first_card->value + sec_card->value);
-    double wager = 14.;
-    bet(&player, wager);
+    double bet = 14.;
+    wager(&player, bet);
 
     //check the player_natural_check function
     if (!player_natural_check(&player)){
@@ -314,14 +314,14 @@ int test_bust(){
     //Initialize the players for bust testing
     Player non_bust_player;
     get_player(&non_bust_player);
-    bet(&non_bust_player, 15);
+    wager(&non_bust_player, 15);
     non_bust_player.hand[0] = card_5;
     non_bust_player.hand[1] = card_king;
     non_bust_player.total = non_bust_player.hand[0]->value + non_bust_player.hand[1]->value;
 
     Player player_w_ace;
     get_player(&player_w_ace);
-    bet(&player_w_ace, 15);
+    wager(&player_w_ace, 15);
     player_w_ace.hand[0] = card_5;
     player_w_ace.hand[1] = card_ace;
     player_w_ace.hand[2] = card_8;
@@ -329,7 +329,7 @@ int test_bust(){
 
     Player player_wo_ace;
     get_player(&player_wo_ace);
-    bet(&player_wo_ace, 15);
+    wager(&player_wo_ace, 15);
     player_wo_ace.hand[0] = card_5;
     player_wo_ace.hand[1] = card_8;
     player_wo_ace.hand[2] = card_king;
@@ -671,10 +671,10 @@ int main(int argc, char **argv){
     }
 
     //bet function test
-    if (test_bet((14))){
-        printf("bet function test passed.\n");
+    if (test_wager((14))){
+        printf("wager function test passed.\n");
     } else {
-        printf("bet function test failed.\n");
+        printf("wager function test failed.\n");
         return 0;
     }
 

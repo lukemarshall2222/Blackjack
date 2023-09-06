@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <string.h>
+#include <time.h>
 
 typedef enum {
     Spades = 0,
@@ -72,6 +73,7 @@ char *get_rank(Rank rank);
 Deck *get_decks(long num_decks);
 void shuffle(Deck *deck, long num_decks);
 Card *pop(Deck *deck);
+int empty_deck(Deck *deck);
 void free_deck(Deck *deck, long num_decks);
 
 //player functions
@@ -106,5 +108,6 @@ void dealer_new_round(Dealer *dealer);
 void dealer_print_hand(Dealer *dealer);
 void free_dealer(Dealer *dealer);
 
+void exit_game(Dealer *dealer, Player *players, long num_players, Deck *deck);
 
 #endif
